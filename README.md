@@ -3,7 +3,7 @@
 
 # OmegaPy
 ## Summary
-Simple implementation in Python of the reliability: Omega Total,
+Simple implementation in Python of the reliability measures: Omega Total,
 Omega Hierarchical and Omega Hierarchical Total.
 
 | Name                                                                                  | Link                                                                                                                                                                | 
@@ -33,6 +33,6 @@ https://personality-project.org/r/book/Chapter7.pdf
 * Vallat, R. (2018). Pingouin: statistics in Python. Journal of Open Source Software, 3(31), 1026, https://doi.org/10.21105/joss.01026
 * Wolff, Hans-Georg, and Katja Preising. "Exploring item and higher order factor structure with the Schmid-Leiman solution: Syntax codes for SPSS and SAS." Behavior Research Methods 37.1 (2005): 48-58.
 
-# Acknowledgement
+# Acknowledgement
 * real-statistics.com
 * Factor Analyzer. Python library. https://github.com/EducationalTestingService/factor_analyzer 
