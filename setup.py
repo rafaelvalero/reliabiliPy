@@ -1,8 +1,6 @@
 import setuptools
 # Packages
 base_packages = [
-    "numpy",
-    "pandas",
     "factor_analyzer"
 ]
 
@@ -12,7 +10,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="OmegaPy",
-    version="0.0.1",
+    version="0.0.6",
     author="Rafael Valero-Fernandez",
     author_email="rafael.valero.fernandez@gmail.com",
     description="Simple implementation in Python of the reliability: "
