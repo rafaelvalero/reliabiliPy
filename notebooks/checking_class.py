@@ -1,6 +1,6 @@
 import pandas as pd
 import numpy as np
-from omegapy import reliability_analysis
+from reliabilipy import reliability_analysis
 correlations_matrix = pd.DataFrame(np.matrix([[1., 0.483, 0.34, 0.18, 0.277, 0.257, -0.074, 0.212, 0.226],
                                       [0.483, 1., 0.624, 0.26, 0.433, 0.301, -0.028, 0.362, 0.236],
                                       [0.34, 0.624, 1., 0.24, 0.376, 0.244, 0.233, 0.577, 0.352],
