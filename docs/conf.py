@@ -30,7 +30,8 @@ author = 'Rafael Valero-Fernandez'
 extensions = [
     "sphinx_rtd_theme",
     "sphinx.ext.autodoc",
-    'sphinx.ext.viewcode'
+    'sphinx.ext.viewcode',
+    'sphinx.ext.githubpages'
 ]
 
 # Add any paths that contain templates here, relative to this directory.

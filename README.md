@@ -1,5 +1,5 @@
 [![DOI](https://zenodo.org/badge/445846537.svg)](https://zenodo.org/badge/latestdoi/445846537)
-[![](https://rafaelvalero.github.io/OmegaPy//workflows/docs/badge.svg)]
+[![](https://rafaelvalero.github.io/OmegaPy/workflows/badge.svg)]
 
 # OmegaPy
 
