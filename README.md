@@ -1,7 +1,8 @@
 [![DOI](https://zenodo.org/badge/445846537.svg)](https://zenodo.org/badge/latestdoi/445846537)
-
+[![](https://rafaelvalero.github.io/OmegaPy//workflows/docs/badge.svg)]
 
 # OmegaPy
+
 ## Summary
 Simple implementation in Python of the reliability measures: Omega Total,
 Omega Hierarchical and Omega Hierarchical Total.
@@ -12,6 +13,7 @@ Omega Hierarchical and Omega Hierarchical Total.
 | Omega Hierarchcal  ![w](https://latex.codecogs.com/svg.latex?\omega_{h})              ||
 | Omega Hierarchycal Limit ![w](https://latex.codecogs.com/svg.latex?\omega_{h_{\infty}}) | |
 
+See [Documentation](https://rafaelvalero.github.io/OmegaPy/)
 ## Quick Start
 ```python
 import pandas as pd
