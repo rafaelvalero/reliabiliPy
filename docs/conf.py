@@ -32,7 +32,8 @@ extensions = [
     "sphinx.ext.autodoc",
     'sphinx.ext.viewcode',
     'sphinx.ext.githubpages',
-    'sphinx.ext.autosummary'
+    'sphinx.ext.autosummary',
+    'm2r2'
 ]
 # Turn on sphinx.ext.autosummary
 autosummary_generate = True
@@ -45,6 +46,8 @@ templates_path = ['_templates']
 # This pattern also affects html_static_path and html_extra_path.
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 
+# source_suffix = '.rst'
+source_suffix = ['.rst', '.md']
 
 # -- Options for HTML output -------------------------------------------------
 
