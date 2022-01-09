@@ -77,6 +77,79 @@
 </ul>
 </div>
 </section>
+<section id="readme-file">
+<h1>Readme File<a class="headerlink" href="#readme-file" title="Permalink to this headline"></a></h1>
+<a class="reference external image-reference" href="https://zenodo.org/badge/latestdoi/445846537"><img alt="DOI" src="https://zenodo.org/badge/445846537.svg" /></a>
+</section>
+<section id="omegapy">
+<h1>OmegaPy<a class="headerlink" href="#omegapy" title="Permalink to this headline"></a></h1>
+<section id="summary">
+<h2>Summary<a class="headerlink" href="#summary" title="Permalink to this headline"></a></h2>
+<p>Simple implementation in Python of the reliability measures: Omega Total,
+Omega Hierarchical and Omega Hierarchical Total.</p>
+<p>See <a class="reference external" href="https://rafaelvalero.github.io/OmegaPy/">Documentation</a></p>
+</section>
+<section id="quick-start">
+<h2>Quick Start<a class="headerlink" href="#quick-start" title="Permalink to this headline"></a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">omegapy</span> <span class="kn">import</span> <span class="n">reliability_analysis</span>
+<span class="n">correlations_matrix</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">matrix</span><span class="p">([[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">0.483</span><span class="p">,</span> <span class="mf">0.34</span><span class="p">,</span> <span class="mf">0.18</span><span class="p">,</span> <span class="mf">0.277</span><span class="p">,</span> <span class="mf">0.257</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.074</span><span class="p">,</span> <span class="mf">0.212</span><span class="p">,</span> <span class="mf">0.226</span><span class="p">],</span>\
+                                  <span class="p">[</span><span class="mf">0.483</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">0.624</span><span class="p">,</span> <span class="mf">0.26</span><span class="p">,</span> <span class="mf">0.433</span><span class="p">,</span> <span class="mf">0.301</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.028</span><span class="p">,</span> <span class="mf">0.362</span><span class="p">,</span> <span class="mf">0.236</span><span class="p">],</span>\
+                                  <span class="p">[</span><span class="mf">0.34</span><span class="p">,</span> <span class="mf">0.624</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">0.24</span><span class="p">,</span> <span class="mf">0.376</span><span class="p">,</span> <span class="mf">0.244</span><span class="p">,</span> <span class="mf">0.233</span><span class="p">,</span> <span class="mf">0.577</span><span class="p">,</span> <span class="mf">0.352</span><span class="p">],</span>\
+                                  <span class="p">[</span><span class="mf">0.18</span><span class="p">,</span> <span class="mf">0.26</span><span class="p">,</span> <span class="mf">0.24</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">0.534</span><span class="p">,</span> <span class="mf">0.654</span><span class="p">,</span> <span class="mf">0.165</span><span class="p">,</span> <span class="mf">0.411</span><span class="p">,</span> <span class="mf">0.306</span><span class="p">],</span>\
+                                  <span class="p">[</span><span class="mf">0.277</span><span class="p">,</span> <span class="mf">0.433</span><span class="p">,</span> <span class="mf">0.376</span><span class="p">,</span> <span class="mf">0.534</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">0.609</span><span class="p">,</span> <span class="mf">0.041</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.239</span><span class="p">],</span>\
+                                  <span class="p">[</span><span class="mf">0.257</span><span class="p">,</span> <span class="mf">0.301</span><span class="p">,</span> <span class="mf">0.244</span><span class="p">,</span> <span class="mf">0.654</span><span class="p">,</span> <span class="mf">0.609</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">0.133</span><span class="p">,</span> <span class="mf">0.399</span><span class="p">,</span> <span class="mf">0.32</span><span class="p">],</span>\
+                                  <span class="p">[</span><span class="o">-</span><span class="mf">0.074</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.028</span><span class="p">,</span> <span class="mf">0.233</span><span class="p">,</span> <span class="mf">0.165</span><span class="p">,</span> <span class="mf">0.041</span><span class="p">,</span> <span class="mf">0.133</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">0.346</span><span class="p">,</span> <span class="mf">0.206</span><span class="p">],</span>\
+                                  <span class="p">[</span><span class="mf">0.212</span><span class="p">,</span> <span class="mf">0.362</span><span class="p">,</span> <span class="mf">0.577</span><span class="p">,</span> <span class="mf">0.411</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.399</span><span class="p">,</span> <span class="mf">0.346</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">0.457</span><span class="p">],</span>\
+                                  <span class="p">[</span><span class="mf">0.226</span><span class="p">,</span> <span class="mf">0.236</span><span class="p">,</span> <span class="mf">0.352</span><span class="p">,</span> <span class="mf">0.306</span><span class="p">,</span> <span class="mf">0.239</span><span class="p">,</span> <span class="mf">0.32</span><span class="p">,</span> <span class="mf">0.206</span><span class="p">,</span> <span class="mf">0.457</span><span class="p">,</span> <span class="mf">1.</span><span class="p">]]))</span>
+<span class="n">reliability_report</span> <span class="o">=</span> <span class="n">reliability_analysis</span><span class="p">(</span><span class="n">correlations_matrix</span><span class="o">=</span><span class="n">correlations_matrix</span><span class="p">)</span>
+<span class="n">reliability_report</span><span class="o">.</span><span class="n">fit</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;here omega Hierarchical: &#39;</span><span class="p">,</span><span class="n">reliability_report</span><span class="o">.</span><span class="n">omega_hierarchical</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;here Omega Hierarchical infinite or asymptotic: &#39;</span><span class="p">,</span><span class="n">reliability_report</span><span class="o">.</span><span class="n">omega_hierarchical_asymptotic</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;here Omega Total&#39;</span><span class="p">,</span><span class="n">reliability_report</span><span class="o">.</span><span class="n">omega_total</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;here Alpha Cronbach total&#39;</span><span class="p">,</span><span class="n">reliability_report</span><span class="o">.</span><span class="n">alpha_cronbach</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="context">
+<h1>Context<a class="headerlink" href="#context" title="Permalink to this headline"></a></h1>
+<p>It is common to try check the <a class="reference external" href="https://en.wikipedia.org/wiki/Reliability_(statistics">reliability</a>), i.e.: the consistency of
+a measure, particular in psychometrics and surveys analysis.</p>
+<blockquote>
+<div><p><code class="docutils literal notranslate"><span class="pre">R</span></code> has packages for this kind of analysis available, such us <code class="docutils literal notranslate"><span class="pre">psych</span></code>by Revelle (2017). <code class="docutils literal notranslate"><span class="pre">python</span></code> goes behind on this.</p>
+</div></blockquote>
+<p>The closes are <a class="reference external" href="https://github.com/EducationalTestingService/factor_analyzer">factor-analyser</a> and <a class="reference external" href="https://pingouin-stats.org/index.html">Pingouin</a>.
+As I write this there is a gap in the market since none of the above libraries currently implement any</p>
+<blockquote>
+<div><p>omega related reliability measure. Although Pingouin implements <a class="reference external" href="https://en.wikipedia.org/wiki/Cronbach%27s_alpha">Cronbach’s alpha</a></p>
+</div></blockquote>
+</section>
+<section id="references">
+<h1>References<a class="headerlink" href="#references" title="Permalink to this headline"></a></h1>
+<ul class="simple">
+<li><p>Flora, David B. “Your coefficient alpha is probably wrong, but which coefficient omega is right? A tutorial on using R to obtain better reliability estimates.” Advances in Methods and Practices in Psychological Science 3.4 (2020): 484-501. <a class="reference external" href="https://journals.sagepub.com/doi/pdf/10.1177/2515245920951747">https://journals.sagepub.com/doi/pdf/10.1177/2515245920951747</a></p></li>
+<li><p>Revelle, Willian. Manuscrip. 2021. An introduction to psychometric theory with applications in R.
+<a class="reference external" href="https://personality-project.org/r/book/Chapter7.pdf">https://personality-project.org/r/book/Chapter7.pdf</a></p></li>
+<li><p>Revelle, William R. “psych: Procedures for personality and psychological research.” (2017).</p>
+<ul>
+<li><p>Omega Implementation in R. <a class="reference external" href="https://github.com/cran/psych/blob/master/R/omega.R">https://github.com/cran/psych/blob/master/R/omega.R</a></p></li>
+<li><p>Schmid-Leiman in R. <a class="reference external" href="https://github.com/cran/psych/blob/master/R/schmid.R">https://github.com/cran/psych/blob/master/R/schmid.R</a></p></li>
+</ul>
+</li>
+<li><p>Starkweather, Jon (2013). Hierarchical Factor Analysis. <a class="reference external" href="https://it.unt.edu/sites/default/files/hierfa_l_jds_apr2013.pdf">https://it.unt.edu/sites/default/files/hierfa_l_jds_apr2013.pdf</a></p></li>
+<li><p>Vallat, R. (2018). Pingouin: statistics in Python. Journal of Open Source Software, 3(31), 1026, <a class="reference external" href="https://doi.org/10.21105/joss.01026">https://doi.org/10.21105/joss.01026</a></p></li>
+<li><p>Wolff, Hans-Georg, and Katja Preising. “Exploring item and higher order factor structure with the Schmid-Leiman solution: Syntax codes for SPSS and SAS.” Behavior Research Methods 37.1 (2005): 48-58.</p></li>
+</ul>
+</section>
+<section id="acknowledgement">
+<h1>Acknowledgement<a class="headerlink" href="#acknowledgement" title="Permalink to this headline"></a></h1>
+<ul class="simple">
+<li><p>real-statistics.com</p></li>
+<li><p>Factor Analyzer. Python library. <a class="reference external" href="https://github.com/EducationalTestingService/factor_analyzer">https://github.com/EducationalTestingService/factor_analyzer</a></p></li>
+</ul>
+</section>
 <section id="indices-and-tables">
 <h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline"></a></h1>
 <ul class="simple">

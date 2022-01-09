@@ -12,6 +12,11 @@ Welcome to OmegaPy's documentation!
 
    modules.rst
 
+Readme File
+===========
+
+.. mdinclude:: ../README.md
+
 Indices and tables
 ==================
 
