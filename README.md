@@ -7,11 +7,13 @@
 Simple implementation in Python of the reliability measures: Omega Total,
 Omega Hierarchical and Omega Hierarchical Total.
 
-| Name                                                                                  | Link                                                                                                                                                                | 
-|---------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Omega Total    ![w](https://latex.codecogs.com/svg.latex?\omega_{t})                  | Tell us how muhc variance can the model explain                                                                                                                     |
-| Omega Hierarchcal  ![w](https://latex.codecogs.com/svg.latex?\omega_{h})              ||
-| Omega Hierarchycal Limit ![w](https://latex.codecogs.com/svg.latex?\omega_{h_{\infty}}) | |
+| Name                                                                                                                    | Link                                                                                                                                                                | 
+|-------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Omega Total    ![w](https://latex.codecogs.com/svg.latex?\omega_{t})                                                    | Tell us how muhc variance can the model explain                                                                                                                     |
+| Omega Hierarchcal  ![w](https://latex.codecogs.com/svg.latex?\omega_{h})                                                ||
+| Omega Hierarchycal Limit ![w](https://latex.codecogs.com/svg.latex?\omega_{h_{\infty}})                                 | |
+| [Cronbach's alpha](https://en.wikipedia.org/wiki/Cronbach%27s_alpha)  ![w](https://latex.codecogs.com/svg.latex?\alpha) | |
+
 
 See [Documentation](https://rafaelvalero.github.io/OmegaPy/)
 ## Quick Start
