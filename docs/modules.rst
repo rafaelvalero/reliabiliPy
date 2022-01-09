@@ -1,7 +1,7 @@
-omegapy
-=======
+reliabiliPy
+===========
 
 .. toctree::
    :maxdepth: 4
 
-   omegapy
+   reliabilipy
