@@ -17,7 +17,7 @@ import sphinx_rtd_theme
 
 # -- Project information -----------------------------------------------------
 
-project = 'OmegaPy'
+project = 'reliabiliPy'
 copyright = '2022, Rafael Valero-Fernandez'
 author = 'Rafael Valero-Fernandez'
 
