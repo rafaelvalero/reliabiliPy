@@ -28,6 +28,8 @@ V = pd.DataFrame(np.matrix([[1.0, 0.5, 0.5, 0.5, 0.5, 0.5, 0.2, 0.2, 0.2, 0.2, 0
 [0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 1.0, 0.7],
 [0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.7, 1.0]]))
 
+V.T-V.T.to_numpy()
+
 Vx=V.sum().sum()
 print(Vx)
 
@@ -103,6 +105,53 @@ print(reliability_report.omega_hierarchical_asymptotic)
 # \mathbf{U}_{2}=\left[\mathbf{I}-\operatorname{diag}\left(\mathbf{F}_{2} \mathbf{R}_{2} \mathbf{F}_{2}^{\prime}\right)\right]^{0.5},
 # $$
 # where $\mathbf{I}$ is an identity matrix and diag indicates that only
+
+# $$
+# \mathbf{F}_{2}^{\mathrm{SLS}}=\mathbf{F}_{1} * \mathbf{F}_{2},
+# $$
+
+general_component = np.dot(reliability_report.fa_f.loadings_,
+                           reliability_report.fa_g.loadings_)
+general_component
+
+# Eigenvalue g
+
+np.dot(general_component.T,general_component)
+
+# # $u^2$
+
+reliability_report.fa_f.get_uniquenesses()
+
+# # $h^2$
+
+reliability_report.fa_f.get_communalities()
+
+# $$
+# \mathbf{F}_{1}^{\mathrm{SLS}}=\mathbf{F}_{1} * \mathbf{U}_{2},
+# $$
+
+eigenvector_report = np.zeros(reliability_report.fa_f.loadings_.shape)
+eigenvector_report
+
+
+reliability_report.fa_g.loadings_
+
+reliability_report.fa_f.get_uniquenesses()
+
+# +
+for i in range(0,reliability_report.fa_g.get_uniquenesses().__len__()):
+    eigenvector_report[:,i] = reliability_report.fa_f.loadings_[:,i]*reliability_report.fa_g.get_uniquenesses()[i]**0.5
+
+    
+# -
+
+# The eigenvectors:
+
+eigenvector_report.round(3)
+
+# The eigenvalues:
+
+np.dot(eigenvector_report.T,eigenvector_report).sum(axis=1)
 
 
 
