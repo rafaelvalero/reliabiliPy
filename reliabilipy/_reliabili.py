@@ -114,16 +114,23 @@ class reliability_analysis:
         # FactorAnalyzer
         self._argument_checker()
         # convert to numpy
+
         # check to see if there are any null values, and if
         # so impute using the desired imputation approach
         if not isinstance(self.raw_dataset,type(None)):
-            print(isinstance(self.raw_dataset,type(None)))
+            # convert to numpy
+            if isinstance(self.raw_dataset,pd.DataFrame):
+                self.raw_dataset = self.raw_dataset.to_numpy()
             if np.isnan(self.raw_dataset).any() and not self.is_corr_matrix:
                 self.raw_dataset_imputated = impute_values(self.raw_dataset, how=self.impute)
 
         # get the correlation matrix
         if not self.is_corr_matrix:
-            self.correlations_matrix = np.abs(corr(self.raw_dataset_imputated))
+            if not isinstance(self.raw_dataset_imputated,type(None)):
+                self.correlations_matrix = np.abs(corr(self.raw_dataset_imputated))
+            else:
+                self.correlations_matrix = np.abs(corr(self.raw_dataset))
+
         # Start Calculations
         self.fa_f = FactorAnalyzer(rotation=self.rotation_fa_f,
                                    method=self.method_fa_f,
