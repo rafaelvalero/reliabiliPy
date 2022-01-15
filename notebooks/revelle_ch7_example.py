@@ -1,6 +1,28 @@
 # -*- coding: utf-8 -*-
-
-
+#
+#
+# # Aim
+#
+# To provide a clear understanding of some of the key measures or reliability and their implementation in `python`.
+#
+# # How
+#
+# To do that I will follow references as close as possible while providing the python code of the implementation of the ideas and examples.
+#
+# Revelle has greatly created and write many papers in the matter and the library `psych`in `R` with the corresponding implementations. We would follow Revelle 2021 and 2017, in particlar Revelle 2021 very closely.
+#
+# We would expand a bit when calculating the omegas and in particular when using the `Schmid-Leiman` solution, following Wolff and Presing 2005, as it constains a clear explanations of the theory and the estimation, as in this paper authors describe the implementation in `SPSS` and `SAS`, which something similar we are trying to do here in `python`.
+#
+#
+# ## References
+# * Revelle, Willian. Manuscrip. 2021. An introduction to psychometric theory with applications in R. https://personality-project.org/r/book/Chapter7.pdf
+# * Revelle, William R. "psych: Procedures for personality and psychological research." (2017).
+# * Wolff, Hans-Georg, and Katja Preising. "Exploring item and higher order factor structure with the Schmid-Leiman solution: Syntax codes for SPSS and SAS." Behavior Research Methods 37.1 (2005): 48-58.
+#
+# Examples in R.
+#
+# This work: 
+# * Rafael Valero Fernández. (2022). reliabiliPy: measures of survey domain reliability in Python with explanations and examples. Cronbach´s Alpha and Omegas. (v0.0.0). Zenodo.[![DOI](https://zenodo.org/badge/445846537.svg)](https://zenodo.org/badge/latestdoi/445846537) 
 
 name_notebook = 'revelle_ch7_example' # this is to save
 
@@ -13,7 +35,7 @@ sys.path.append("../")
 
 from reliabilipy import reliability_analysis
 
-# Dataset as exmample in Table 7.5  https://personality-project.org/r/book/Chapter7.pdf
+# Dataset as examample in Table 7.5  https://personality-project.org/r/book/Chapter7.pdf
 
 V = pd.DataFrame(np.matrix([[1.0, 0.5, 0.5, 0.5, 0.5, 0.5, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2],
 [0.5, 1.0, 0.5, 0.5, 0.5, 0.5, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2],
@@ -28,15 +50,26 @@ V = pd.DataFrame(np.matrix([[1.0, 0.5, 0.5, 0.5, 0.5, 0.5, 0.2, 0.2, 0.2, 0.2, 0
 [0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 1.0, 0.7],
 [0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.7, 1.0]]))
 
-V.T-V.T.to_numpy()
+# Lets try to stimate different reliability measures
 
 Vx=V.sum().sum()
 print(Vx)
 
-
+# $$
+# \lambda_{1}=1-\frac{\operatorname{tr}\left(\mathbf{V}_{\mathbf{x}}\right)}{V_{x}}=\frac{V_{x}-\operatorname{tr}\left(\mathbf{V}_{x}\right)}{V_{x}} .
+# $$
+# In the example:
+# $$
+# \lambda_{1}=1-\frac{12}{53.2}=\frac{41.2}{53.2}=.774
+# $$
 
 lambda1 = 1 - np.diag(V).sum() / Vx
 print(lambda1)
+
+# Let $C_{2}=\mathbf{1}(\mathbf{V}-\operatorname{diag}(\mathbf{V}))^{2} \mathbf{1}^{\prime}$, then
+# $$
+# \lambda_{2}=\lambda_{1}+\frac{\sqrt{\frac{n}{n-1} C_{2}}}{V_{x}}=\frac{V_{x}-\operatorname{tr}\left(\mathbf{V}_{x}\right)+\sqrt{\frac{n}{n-1} C_{2}}}{V_{x}} 
+# $$
 
 n=V.shape[0]
 C2=((V - np.eye(n)*np.diag(V))**2).sum().sum()
@@ -45,28 +78,35 @@ print(C2)
 lambda2=lambda1+(n/(n-1)*C2)**0.5/Vx
 print(lambda2)
 
+# $$\lambda_{3}=\lambda_{1}+\frac{\frac{V_{X}-\operatorname{tr}\left(\mathbf{V}_{X}\right)}{n(n-1)}}{V_{X}}=\frac{n \lambda_{1}}{n-1}=\frac{n}{n-1}\left(1-\frac{\operatorname{tr}(\mathbf{V})_{x}}{V_{x}}\right)=\frac{n}{n-1} \frac{V_{x}-\operatorname{tr}\left(\mathbf{V}_{x}\right)}{V_{x}}=\alpha$$
+
 alpha = n/(n-1)*(Vx-np.diag(V).sum())/Vx
 print(alpha)
 
-# McDonald's $ω_t$, which is similar to Guttman's $λ_6$, guttman but uses the estimates of uniqueness ($u^2$) from factor analysis to find $e_j^2$. This is based on a decomposition of the variance of a test score, $V_x$ into four parts: that due to a general factor, $\vec{g}$, that due to a set of group factors, $\vec{f}$, (factors common to some but not all of the items), specific factors, $\vec{s}$ unique to each item, and $\vec{e}$, random error. (Because specific variance can not be distinguished from random error unless the test is given at least twice, some combine these both into error).
+# # Omegas reliability
 #
-# Letting $x = cg + Af + Ds + e$ then the communality of item_j, based upon general as well as group factors, $h_j^2 = c_j^2 + sum(f_ij^2)$ and the unique variance for the item $u_j^2 = σ_j^2 (1-h_j^2)$ may be used to estimate the test reliability. That is, if $h_j^2$ is the communality of item_j, based upon general as well as group factors, then for standardized items, $e_j^2 = 1 - h_j^2$ and
+# Omegas are based on a decomposition of the variance of a test score, $V_x$ into four parts: that due to a general factor, $\vec{g}$, that due to a set of group factors, $\vec{f}$, (factors common to some but not all of the items), specific factors, $\vec{s}$ unique to each item, and $\vec{e}$, random error. (Because specific variance can not be distinguished from random error unless the test is given at least twice, some combine these both into error).
+#
+# $$
+# \begin{equation} \label{eq:1}
+# x = cg + Af + Ds + e
+# \end{equation}
+# $$
+#
+# then the communality of item $j$, based upon general as well as group factors, $h_j^2 = c_j^2 + \sum(f_{ij}^2)$ and the unique variance for the item $u_j^2 = σ_j^2 (1-h_j^2)$ may be used to estimate the test reliability. That is, if $h_j^2$ is the communality of item $j$, based upon general as well as group factors, then for standardized items, $e_j^2 = 1 - h_j^2$ and
 #
 # $$ω_t =  \frac{1 cc' 1 + 1 AA' 1'}{V_x}$$
 #
-# Because $h_j^2 ≥q r_{smc}^2, ω_t ≥q λ_6$.
 #
-# It is important to distinguish here between the two ω coefficients of McDonald, 1978 and Equation 6.20a of McDonald, 1999, ω_t and ω_h. While the former is based upon the sum of squared loadings on all the factors, the latter is based upon the sum of the squared loadings on the general factor.
+# $ω_t$ is based upon the sum of squared loadings on all the factors.
+# $ω_h$ is based upon the sum of the squared loadings on the general factor.
 #
 # $$ω_h =  \frac{1 cc' 1'}{Vx}$$
 #
-# Another estimate reported is the omega for an infinite length test with a structure similar to the observed test (omega H asymptotic). This is found by
+# Another estimate reported is the omega for an infinite length test with a structure similar to the observed test (omega hierarchical asymptotic). This is found by
 #
 # $$ω_{limit} = \frac{1 cc' 1'}{1 cc' 1' + 1 AA' 1'}$$
 #
-# .
-#
-# Following suggestions by Steve Reise, the Explained Common Variance (ECV) is also reported. This is the ratio of the general factor eigen value to the sum of all of the eigen values. As such, it is a better indicator of unidimensionality than of the amount of test variance accounted for by a general factor.
 #
 # The input to omega may be a correlation matrix or a raw data matrix, or a factor pattern matrix with the factor intercorrelations (Phi) matrix.
 
@@ -78,7 +118,11 @@ print(reliability_report.omega_hierarchical)
 print(reliability_report.omega_hierarchical_asymptotic)
 
 
-# matrix $\mathbf{F}_{1}$ (i.e., rotated loadings), a first-order factorcorrelation matrix termed $\mathbf{R}_{1}$, and unique variances $\mathbf{U}_{1}^{2}$ of variables:
+# # Estimation of Omegas reliabilities
+#
+# But how can we estimate that?. Using `Schmid-Leiman` solution. For an explanation on that   Wolff and Preising (2005). There the authors try to do the same that in this work but for SPSS and SAS.
+#
+# matrix $\mathbf{F}_{1}$ (i.e., rotated loadings), a first-order factor correlation matrix termed $\mathbf{R}_{1}$, and unique variances $\mathbf{U}_{1}^{2}$ of variables:
 # $$
 # \mathbf{R}_{v}=\mathbf{F}_{1} \mathbf{R}_{1} \mathbf{F}_{1}^{\prime}+\mathbf{U}_{1}^{2} .
 # $$
@@ -109,6 +153,7 @@ print(reliability_report.omega_hierarchical_asymptotic)
 # $$
 # \mathbf{F}_{2}^{\mathrm{SLS}}=\mathbf{F}_{1} * \mathbf{F}_{2},
 # $$
+# implementation in `python`:
 
 general_component = np.dot(reliability_report.fa_f.loadings_,
                            reliability_report.fa_g.loadings_)
@@ -118,11 +163,11 @@ general_component
 
 np.dot(general_component.T,general_component)
 
-# # $u^2$
+# # $u^2$ in our example:
 
 reliability_report.fa_f.get_uniquenesses()
 
-# # $h^2$
+# # $h^2$ in our example:
 
 reliability_report.fa_f.get_communalities()
 
@@ -145,7 +190,7 @@ for i in range(0,reliability_report.fa_g.get_uniquenesses().__len__()):
     
 # -
 
-# The eigenvectors:
+# The eigenvectors in our example:
 
 eigenvector_report.round(3)
 
