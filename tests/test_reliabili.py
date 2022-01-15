@@ -86,3 +86,16 @@ def test_analyze_rotation_fa_f_value_error():
     ra = reliability_analysis(rotation_fa_f='blah',
                               correlations_matrix=np.random.randn(500).reshape(100, 5))
     ra.fit()
+"""
+data = pd.read_csv('../data/bfi_data.csv')
+data.head()
+from reliabilipy import reliability_analysis
+concienciousness = data[["O1","O2","O3","O4","O5"]]
+ra = reliability_analysis(raw_dataset=concienciousness.to_numpy(),
+                          is_corr_matrix=False,
+                          impute='median')
+
+ra.fit()
+ra.alpha_cronbach
+
+"""

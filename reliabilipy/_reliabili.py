@@ -16,12 +16,9 @@ POSSIBLE_ROTATIONS = ORTHOGONAL_ROTATIONS + OBLIQUE_ROTATIONS
 
 class reliability_analysis:
     """
-
     Usage:
-
     ```python
     ```
-
     >>> import pandas as pd
     >>> import numpy as np
     >>> from reliabilipy import reliability_analysis
@@ -45,9 +42,7 @@ class reliability_analysis:
     >>> reliability_report.alpha_cronbach
     0.803183205136355
     >>> np.testing.assert_almost_equal(reliability_report.lambda1, 0.7139, decimal=3)
-
     >>> np.testing.assert_almost_equal(reliability_report.lambda2, 0.8149701194973398, decimal=3)
-
     """
 
     def __init__(self,
@@ -62,7 +57,6 @@ class reliability_analysis:
         """
         Initialization of the class.
         Set up all key variables and options for the analysis
-
         :param self:
         :param correlations_matrix:
         :param method_fa_f:
@@ -119,20 +113,21 @@ class reliability_analysis:
         # check the input arguments. To make sure everything is according to
         # FactorAnalyzer
         self._argument_checker()
-
+        # convert to numpy
         # check to see if there are any null values, and if
         # so impute using the desired imputation approach
-        if self.raw_dataset is not None:
+        if not isinstance(self.raw_dataset,type(None)):
+            print(isinstance(self.raw_dataset,type(None)))
             if np.isnan(self.raw_dataset).any() and not self.is_corr_matrix:
                 self.raw_dataset_imputated = impute_values(self.raw_dataset, how=self.impute)
 
         # get the correlation matrix
         if not self.is_corr_matrix:
-            self.correlations_matrix = corr(self.raw_dataset_imputated)
+            self.correlations_matrix = np.abs(corr(self.raw_dataset_imputated))
         # Start Calculations
         self.fa_f = FactorAnalyzer(rotation=self.rotation_fa_f,
                                    method=self.method_fa_f,
-                                   is_corr_matrix=self.is_corr_matrix)
+                                   is_corr_matrix=True)
         self.fa_f.fit(self.correlations_matrix)
         self.fa_g = FactorAnalyzer(rotation=None,
                                    is_corr_matrix=True,
@@ -169,10 +164,3 @@ class reliability_analysis:
                                      self.fa_g.get_uniquenesses()[i] ** 0.5
         self.f_loadings_final = np.abs(f_loadings_final)
         self.f_eigenvalues_final = np.dot(f_loadings_final.T, f_loadings_final).sum(axis=1)
-
-
-if __name__ == "__main__":
-    import doctest
-    doctest.testmod(verbose=True)
-
-
