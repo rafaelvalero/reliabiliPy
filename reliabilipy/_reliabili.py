@@ -37,10 +37,14 @@ class reliability_analysis:
     0.6353899466236236
     >>> reliability_report.alpha_cronbach
     0.803183205136355
+    >>> np.testing.assert_almost_equal(reliability_report.lambda1, 0.7139, decimal=3)
+
+    >>> np.testing.assert_almost_equal(reliability_report.lambda2, 0.8149701194973398, decimal=3)
+
     """
 
     def __init__(self,
-                 correlations_matrix = None,
+                 correlations_matrix=None,
                  method_fa_f: str = 'minres',
                  rotation_fa_f: str = 'oblimin',
                  method_fa_g: str = 'minres',
@@ -88,6 +92,7 @@ class reliability_analysis:
         # Omega Report
         self.general_component = np.dot(self.fa_f.loadings_, self.fa_g.loadings_)
         Vt = self.correlations_matrix.sum().sum()
+        V = self.correlations_matrix
         Vitem = sum(np.diag(self.correlations_matrix))
         gsq = self.general_component.sum() ** 2
         uniq = self.fa_f.get_uniquenesses().sum()
@@ -99,9 +104,13 @@ class reliability_analysis:
         self.omega_hierarchical_asymptotic = gsq / (Vt - uniq)
         # Alpha calculations
         self.alpha_cronbach = ((Vt - Vitem) / Vt) * (nvar / (nvar - 1))
-
+        self.lambda1 = 1 - np.diag(V).sum() / Vt
+        C2 = ((V - np.eye(n) * np.diag(V)) ** 2).sum().sum()
+        self.lambda2 = self.lambda1 + (n / (n - 1) * C2) ** 0.5 / Vt
 
 if __name__ == "__main__":
+    import doctest
+    doctest.testmod(verbose=True)
 
     df_features = pd.DataFrame(np.matrix([[1., 0.483, 0.34, 0.18, 0.277, 0.257, -0.074, 0.212, 0.226],
                                           [0.483, 1., 0.624, 0.26, 0.433, 0.301, -0.028, 0.362, 0.236],
@@ -164,3 +173,7 @@ if __name__ == "__main__":
 
     reliability_report = reliability_analysis(correlations_matrix=df_features)
     reliability_report.fit()
+    reliability_report.lambda1
+    reliability_report.lambda2
+
+    np.testing.assert_almost_equal(reliability_report.lambda1, 0.7139, decimal=2)
