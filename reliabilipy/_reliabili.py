@@ -16,18 +16,24 @@ POSSIBLE_ROTATIONS = ORTHOGONAL_ROTATIONS + OBLIQUE_ROTATIONS
 
 class reliability_analysis:
     """
-
     Initialization of the class.
 
     Set up all key variables and options for the analysis
 
-    :param self:
-    :param correlations_matrix:
-    :param method_fa_f:
-    :param rotation_fa_f:
-    :param method_fa_g:
-    :param is_corr_matrix:
-    :param n_factors_f:
+    :param raw_dataset: None. pd.DataFrame or array-like. The raw data. However you could pass
+        the correlation matrix.
+    :param correlations_matrix: None. pd.DataFrame or array-like. The correlation matrix of the dataset.
+    :param rotation_fa_f: 'oblimin'. str. The rotation for factor analysis for the group factors. Other options are:
+        'promax', 'oblimin', 'quartimin', 'geomin_obl'. Please avoid orthogonal ones.
+    :param method_fa_g: 'minres' str. method for factor analysis for the common factor.
+        Options are 'ml', 'mle', 'uls', 'minres', 'principal'. Refer to `factor_analyzer` package.
+    :param method_fa_f:'minres' str. method for factor analysis for the common factor.
+        Options are 'ml', 'mle', 'uls', 'minres', 'principal'. Refer to `factor_analyzer` package.
+    :param is_corr_matrix: boolean. True. True if you have introduced the correlation matrix in variable
+        `correlations_matrix`.
+        False if you have introduced the raw dataset in `raw_dataset`.
+    :param n_factors_f: 3. int. The number of groups factor to consider.
+
     :return:
 
     Examples
