@@ -16,9 +16,23 @@ POSSIBLE_ROTATIONS = ORTHOGONAL_ROTATIONS + OBLIQUE_ROTATIONS
 
 class reliability_analysis:
     """
-    Usage:
-    ```python
-    ```
+
+    Initialization of the class.
+
+    Set up all key variables and options for the analysis
+
+    :param self:
+    :param correlations_matrix:
+    :param method_fa_f:
+    :param rotation_fa_f:
+    :param method_fa_g:
+    :param is_corr_matrix:
+    :param n_factors_f:
+    :return:
+
+    Examples
+    -------
+    With correlations matrix
     >>> import pandas as pd
     >>> import numpy as np
     >>> from reliabilipy import reliability_analysis
@@ -43,6 +57,26 @@ class reliability_analysis:
     0.803183205136355
     >>> np.testing.assert_almost_equal(reliability_report.lambda1, 0.7139, decimal=3)
     >>> np.testing.assert_almost_equal(reliability_report.lambda2, 0.8149701194973398, decimal=3)
+
+    With dataset and imputations:
+
+    >>> import pandas as pd
+    >>> import numpy as np
+    >>> from reliabilipy import reliability_analysis
+    >>> raw_dataset = pd.DataFrame([{'C1': 2.0, 'C2': 3.0, 'C3': 3.0, 'C4': 4.0, 'C5': 4.0},\
+        {'C1': 5.0, 'C2': 4.0, 'C3': 4.0, 'C4': 3.0, 'C5': 4.0},\
+        {'C1': 4.0, 'C2': 5.0, 'C3': 4.0, 'C4': 2.0, 'C5': 5.0},\
+        {'C1': 4.0, 'C2': 4.0, 'C3': 3.0, 'C4': 5.0, 'C5': 5.0},\
+        {'C1': 4.0, 'C2': 4.0, 'C3': 5.0, 'C4': 3.0, 'C5': 2.0},\
+        {'C1': 4.0, 'C2': np.nan, 'C3': 3.0, 'C4': 5.0, 'C5': 5.0},\
+        {'C1': np.nan, 'C2': 4.0, 'C3': 5.0, 'C4': 3.0, 'C5': 2.0}])
+    >>> ra = reliability_analysis(raw_dataset=raw_dataset,\
+                              is_corr_matrix=False,\
+                              impute='median')
+    >>> ra.fit()
+    >>> np.testing.assert_almost_equal(reliability_report.alpha_cronbach, 0.78917, decimal=3)
+    >>> np.testing.assert_almost_equal(reliability_report.omega_total, 0.9378722, decimal=3)
+
     """
 
     def __init__(self,
@@ -54,18 +88,7 @@ class reliability_analysis:
                  is_corr_matrix: bool = True,
                  impute: str = 'drop',
                  n_factors_f: int = 3):
-        """
-        Initialization of the class.
-        Set up all key variables and options for the analysis
-        :param self:
-        :param correlations_matrix:
-        :param method_fa_f:
-        :param rotation_fa_f:
-        :param method_fa_g:
-        :param is_corr_matrix:
-        :param n_factors_f:
-        :return:
-        """
+
         self.raw_dataset = raw_dataset
         self.correlations_matrix = correlations_matrix
         self.method_fa_f = method_fa_f.lower()
@@ -92,6 +115,19 @@ class reliability_analysis:
         self.raw_dataset_imputated = None
 
     def _argument_checker(self):
+        """
+        This is to check the arguments from the beginning.
+
+        """
+        if not isinstance(self.raw_dataset,type(None)) and self.is_corr_matrix==True:
+            raise ValueError(f"You have introduced variable 'raw_dataset' and "
+                             f"'is_corr_matrix' as True. If 'is_corr_matrix' then"
+                             f"you should use 'correlations_matrix' instead of "
+                             f"'raw_dataset'.")
+
+        if isinstance(self.correlations_matrix,type(None)) and self.is_corr_matrix==True:
+            raise ValueError(f"If 'is_corr_matrix' is True, please introduce it in "
+                             f"'correlations_matrix' = YOUR DATA")
 
         self.impute = self.impute.lower() if isinstance(self.impute, str) else self.impute
         if self.impute not in POSSIBLE_IMPUTATIONS:
@@ -108,7 +144,8 @@ class reliability_analysis:
 
     def fit(self):
         """
-        Here the key calculations happens. See notebook with explanations.
+        Here the key calculations happens.
+        See notebook with explanations.
         """
         # check the input arguments. To make sure everything is according to
         # FactorAnalyzer
@@ -171,3 +208,8 @@ class reliability_analysis:
                                      self.fa_g.get_uniquenesses()[i] ** 0.5
         self.f_loadings_final = np.abs(f_loadings_final)
         self.f_eigenvalues_final = np.dot(f_loadings_final.T, f_loadings_final).sum(axis=1)
+
+
+if __name__ == '__main__':
+    import doctest
+    doctest.testmod(verbose=True)

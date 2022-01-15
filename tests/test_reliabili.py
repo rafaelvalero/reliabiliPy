@@ -71,6 +71,16 @@ def test_analyze_impute_value_error():
                               correlations_matrix=np.random.randn(500).reshape(100, 5))
     ra.fit()
 
+@raises(ValueError)
+def test_raw_data_instead_of_correlations_value_error():
+    ra = reliability_analysis(is_corr_matrix=True,
+                              raw_dataset=np.random.randn(500).reshape(100, 5))
+    ra.fit()
+
+@raises(ValueError)
+def test_no_passing_data_error():
+    ra = reliability_analysis(is_corr_matrix=True)
+    ra.fit()
 
 @raises(ValueError)
 def test_analyze_methods_g_value_error():
@@ -157,17 +167,3 @@ def test_case_raw_data_imputation(raw_dataset,
     np.testing.assert_almost_equal(ra.alpha_cronbach, results_alpha, decimal=3)
     np.testing.assert_almost_equal(ra.omega_total, results_omega_total, decimal=3)
 
-
-"""
-data = pd.read_csv('../data/bfi_data.csv')
-data.head()
-from reliabilipy import reliability_analysis
-concienciousness = data[["O1","O2","O3","O4","O5"]]
-ra = reliability_analysis(raw_dataset=concienciousness.to_numpy(),
-                          is_corr_matrix=False,
-                          impute='median')
-
-ra.fit()
-ra.alpha_cronbach
-
-"""
