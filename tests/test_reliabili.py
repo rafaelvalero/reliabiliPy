@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 from reliabilipy import reliability_analysis
-
+from nose.tools import raises
 
 def test_case_presing_et_all_2002():
     """
@@ -11,6 +11,8 @@ def test_case_presing_et_all_2002():
 
     Data:
     * Moser, K., Preising, K., Göritz, A. S., & Paul, K. (2002). Steigende Informationsflut am Arbeitsplatz: Belastungsgünstiger Umgang mit elektronischen Medien
+
+    Results checked on R.
     """
 
     correlations_matrix = pd.DataFrame(np.array([[1., 0.483, 0.34, 0.18, 0.277, 0.257, -0.074, 0.212, 0.226],
@@ -36,6 +38,7 @@ def test_case_revelle_chapter7():
     """
     Dataset as examample in Table 7.5
      https://personality-project.org/r/book/Chapter7.pdf
+    Results are checked in that pdf.
     """
 
     correlations_matrix = pd.DataFrame(np.array([[1.0, 0.5, 0.5, 0.5, 0.5, 0.5, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2],
@@ -59,5 +62,27 @@ def test_case_revelle_chapter7():
     np.testing.assert_almost_equal(reliability_report.lambda1, 0.7744360, decimal=3)
     np.testing.assert_almost_equal(reliability_report.lambda2, 0.85374, decimal=3)
 
+@raises(ValueError)
+def test_analyze_impute_value_error():
+    ra = reliability_analysis(impute='blah',
+                              correlations_matrix=np.random.randn(500).reshape(100, 5))
+    ra.fit()
 
 
+@raises(ValueError)
+def test_analyze_methods_g_value_error():
+    ra = reliability_analysis(method_fa_g='blah',
+                              correlations_matrix=np.random.randn(500).reshape(100, 5))
+    ra.fit()
+
+@raises(ValueError)
+def test_analyze_methods_f_value_error():
+    ra = reliability_analysis(method_fa_f='blah',
+                              correlations_matrix=np.random.randn(500).reshape(100, 5))
+    ra.fit()
+
+@raises(ValueError)
+def test_analyze_rotation_fa_f_value_error():
+    ra = reliability_analysis(rotation_fa_f='blah',
+                              correlations_matrix=np.random.randn(500).reshape(100, 5))
+    ra.fit()

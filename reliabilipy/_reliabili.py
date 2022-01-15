@@ -2,9 +2,16 @@
 import pandas as pd
 import numpy as np
 from factor_analyzer import FactorAnalyzer
+from factor_analyzer.utils import impute_values, corr
 # import doctest
-
 from typing import List, Tuple, Union, Mapping, Any
+
+POSSIBLE_IMPUTATIONS = ['mean', 'median', 'drop']
+# This options are to alling with factor_analyzer package
+POSSIBLE_METHODS = ['ml', 'mle', 'uls', 'minres', 'principal']
+ORTHOGONAL_ROTATIONS = ['varimax', 'oblimax', 'quartimax', 'equamax', 'geomin_ort']
+OBLIQUE_ROTATIONS = ['promax', 'oblimin', 'quartimin', 'geomin_obl']
+POSSIBLE_ROTATIONS = ORTHOGONAL_ROTATIONS + OBLIQUE_ROTATIONS
 
 
 class reliability_analysis:
@@ -45,10 +52,12 @@ class reliability_analysis:
 
     def __init__(self,
                  correlations_matrix=None,
+                 raw_dataset=None,
                  method_fa_f: str = 'minres',
                  rotation_fa_f: str = 'oblimin',
                  method_fa_g: str = 'minres',
                  is_corr_matrix: bool = True,
+                 impute: str = 'drop',
                  n_factors_f: int = 3):
         """
         Initialization of the class.
@@ -63,13 +72,15 @@ class reliability_analysis:
         :param n_factors_f:
         :return:
         """
-        self.omega_hierarchical = None
+        self.raw_dataset = raw_dataset
         self.correlations_matrix = correlations_matrix
-        self.method_fa_f = method_fa_f
-        self.rotation_fa_f = rotation_fa_f
-        self.method_fa_g = method_fa_g
+        self.method_fa_f = method_fa_f.lower()
+        self.rotation_fa_f = rotation_fa_f.lower()
+        self.method_fa_g = method_fa_g.lower()
         self.is_corr_matrix = is_corr_matrix
         self.n_factors_f = n_factors_f
+        self.impute = impute
+        # Defaults to None
         self.fa_f = None
         self.fa_g = None
         self.general_component = None
@@ -77,9 +88,48 @@ class reliability_analysis:
         self.omega_total = None
         self.omega_hierarchical_asymptotic = None
         self.alpha_cronbach = None
+        self.general_component_loading = None
+        self.lambda2 = None
+        self.lambda1 = None
+        self.general_component_eigenvalue = None
+        self.f_eigenvalues_final = None
+        self.f_loadings_final = None
+        self.omega_hierarchical = None
+        self.raw_dataset_imputated = None
 
+    def _argument_checker(self):
+
+        self.impute = self.impute.lower() if isinstance(self.impute, str) else self.impute
+        if self.impute not in POSSIBLE_IMPUTATIONS:
+            raise ValueError(f"The imputation must be one of the following: {POSSIBLE_IMPUTATIONS}")
+
+        self.rotation_fa_f = self.rotation_fa_f.lower() if isinstance(self.rotation_fa_f, str) else self.rotation_fa_f
+        if self.rotation_fa_f not in POSSIBLE_ROTATIONS + [None]:
+            raise ValueError(f"The rotation must be one of the following: {POSSIBLE_ROTATIONS + [None]}")
+
+        for method_ in [self.method_fa_f, self.method_fa_g]:
+            method_ = method_.lower() if isinstance(method_, str) else method_
+            if method_ not in POSSIBLE_METHODS:
+                raise ValueError(f"The method must be one of the following: {POSSIBLE_METHODS}")
 
     def fit(self):
+        """
+        Here the key calculations happens. See notebook with explanations.
+        """
+        # check the input arguments. To make sure everything is according to
+        # FactorAnalyzer
+        self._argument_checker()
+
+        # check to see if there are any null values, and if
+        # so impute using the desired imputation approach
+        if self.raw_dataset is not None:
+            if np.isnan(self.raw_dataset).any() and not self.is_corr_matrix:
+                self.raw_dataset_imputated = impute_values(self.raw_dataset, how=self.impute)
+
+        # get the correlation matrix
+        if not self.is_corr_matrix:
+            self.correlations_matrix = corr(self.raw_dataset_imputated)
+        # Start Calculations
         self.fa_f = FactorAnalyzer(rotation=self.rotation_fa_f,
                                    method=self.method_fa_f,
                                    is_corr_matrix=self.is_corr_matrix)
@@ -107,73 +157,22 @@ class reliability_analysis:
         self.lambda1 = 1 - np.diag(V).sum() / Vt
         C2 = ((V - np.eye(n) * np.diag(V)) ** 2).sum().sum()
         self.lambda2 = self.lambda1 + (n / (n - 1) * C2) ** 0.5 / Vt
+        """Calculate general component. The part corresponding to the common factor  """
+        general_component = np.dot(self.fa_f.loadings_,
+                                   self.fa_g.loadings_)
+        self.general_component_loading = np.abs(general_component)
+        self.general_component_eigenvalue = np.dot(general_component.T, general_component)
+        # Update Group Factors
+        f_loadings_final = np.zeros(self.fa_f.loadings_.shape)
+        for i in range(0, self.fa_g.get_uniquenesses().__len__()):
+            f_loadings_final[:, i] = self.fa_f.loadings_[:, i] * \
+                                     self.fa_g.get_uniquenesses()[i] ** 0.5
+        self.f_loadings_final = np.abs(f_loadings_final)
+        self.f_eigenvalues_final = np.dot(f_loadings_final.T, f_loadings_final).sum(axis=1)
+
 
 if __name__ == "__main__":
     import doctest
     doctest.testmod(verbose=True)
 
-    df_features = pd.DataFrame(np.matrix([[1., 0.483, 0.34, 0.18, 0.277, 0.257, -0.074, 0.212, 0.226],
-                                          [0.483, 1., 0.624, 0.26, 0.433, 0.301, -0.028, 0.362, 0.236],
-                                          [0.34, 0.624, 1., 0.24, 0.376, 0.244, 0.233, 0.577, 0.352],
-                                          [0.18, 0.26, 0.24, 1., 0.534, 0.654, 0.165, 0.411, 0.306],
-                                          [0.277, 0.433, 0.376, 0.534, 1., 0.609, 0.041, 0.3, 0.239],
-                                          [0.257, 0.301, 0.244, 0.654, 0.609, 1., 0.133, 0.399, 0.32],
-                                          [-0.074, -0.028, 0.233, 0.165, 0.041, 0.133, 1., 0.346, 0.206],
-                                          [0.212, 0.362, 0.577, 0.411, 0.3, 0.399, 0.346, 1., 0.457],
-                                          [0.226, 0.236, 0.352, 0.306, 0.239, 0.32, 0.206, 0.457, 1.]]))
 
-    df_features
-
-    # +
-    rotation = 'oblimin'
-    method = 'minres'
-
-    fa = FactorAnalyzer(rotation=rotation,
-                        method=method,
-                        is_corr_matrix=True)
-    fa.fit(df_features)
-    # -
-
-    fa2 = FactorAnalyzer(rotation=None,
-                         is_corr_matrix=True,
-                         method='minres',
-                         n_factors=1)
-    fa2.fit(fa.phi_)
-
-    general_component = np.dot(fa.loadings_, fa2.loadings_)
-    general_component
-
-    Vt = df_features.sum().sum()
-    Vt
-
-    Vitem = sum(np.diag(df_features))
-    Vitem
-
-    gsq = general_component.sum() ** 2
-    # gsq = fa2.loadings_.sum()**2
-    gsq
-
-    uniq = fa.get_uniquenesses().sum()
-    uniq
-
-    # From now we assume that data is in wide format
-    n, k = df_features.shape
-    nvar = k
-    nvar
-
-    omega_hierarchical = gsq / Vt
-    omega_hierarchical
-
-    omega_total = (Vt - uniq) / Vt
-    omega_total
-
-    # omega_hierarchical_asymptotic
-    omega_hierarchical_asymptotic = gsq / (Vt - uniq)
-    omega_hierarchical_asymptotic
-
-    reliability_report = reliability_analysis(correlations_matrix=df_features)
-    reliability_report.fit()
-    reliability_report.lambda1
-    reliability_report.lambda2
-
-    np.testing.assert_almost_equal(reliability_report.lambda1, 0.7139, decimal=2)
