@@ -34,7 +34,9 @@ def test_case_presing_et_all_2002():
     np.testing.assert_almost_equal(reliability_report.alpha_cronbach, 0.803183205136355, decimal=3)
     np.testing.assert_almost_equal(reliability_report.lambda1, 0.7139, decimal=3)
     np.testing.assert_almost_equal(reliability_report.lambda2, 0.8149701194973398, decimal=3)
-
+    np.testing.assert_almost_equal(reliability_report.report_eigenvalues['g'][0], 2.0281, decimal=3)
+    np.testing.assert_almost_equal(reliability_report.report_eigenvalues['F1'][0], 1.1845, decimal=3)
+    np.testing.assert_almost_equal(reliability_report.report_loadings['g'][0], 0.34, decimal=3)
 
 def test_case_revelle_chapter7():
     """
@@ -63,6 +65,9 @@ def test_case_revelle_chapter7():
     np.testing.assert_almost_equal(reliability_report.alpha_cronbach, 0.844839, decimal=3)
     np.testing.assert_almost_equal(reliability_report.lambda1, 0.7744360, decimal=3)
     np.testing.assert_almost_equal(reliability_report.lambda2, 0.85374, decimal=3)
+    np.testing.assert_almost_equal(reliability_report.report_eigenvalues['g'][0], 2.400, decimal=3)
+    np.testing.assert_almost_equal(reliability_report.report_eigenvalues['F1'][0], 1.599, decimal=3)
+    np.testing.assert_almost_equal(reliability_report.report_loadings['g'][0], 0.45, decimal=3)
 
 
 @raises(ValueError)

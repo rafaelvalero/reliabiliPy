@@ -16,23 +16,31 @@ POSSIBLE_ROTATIONS = ORTHOGONAL_ROTATIONS + OBLIQUE_ROTATIONS
 
 class reliability_analysis:
     """
-
     Initialization of the class.
 
     Set up all key variables and options for the analysis
 
-    :param self:
-    :param correlations_matrix:
-    :param method_fa_f:
-    :param rotation_fa_f:
-    :param method_fa_g:
-    :param is_corr_matrix:
-    :param n_factors_f:
+    :param raw_dataset: None. pd.DataFrame or array-like. The raw data. However you could pass
+        the correlation matrix.
+    :param correlations_matrix: None. pd.DataFrame or array-like. The correlation matrix of the dataset.
+    :param rotation_fa_f: 'oblimin'. str. The rotation for factor analysis for the group factors. Other options are:
+        'promax', 'oblimin', 'quartimin', 'geomin_obl'. Please avoid orthogonal ones.
+    :param method_fa_g: 'minres' str. method for factor analysis for the common factor.
+        Options are 'ml', 'mle', 'uls', 'minres', 'principal'. Refer to `factor_analyzer` package.
+    :param method_fa_f: 'minres' str. method for factor analysis for the common factor.
+        Options are 'ml', 'mle', 'uls', 'minres', 'principal'. Refer to `factor_analyzer` package.
+    :param is_corr_matrix: boolean. True. True if you have introduced the correlation matrix in variable
+        `correlations_matrix`.
+        False if you have introduced the raw dataset in `raw_dataset`.
+    :param n_factors_f: 3. int. The number of groups factor to consider.
+
     :return:
 
     Examples
     -------
-    With correlations matrix
+
+    With correlations matrix:
+
     >>> import pandas as pd
     >>> import numpy as np
     >>> from reliabilipy import reliability_analysis
@@ -57,6 +65,9 @@ class reliability_analysis:
     0.803183205136355
     >>> np.testing.assert_almost_equal(reliability_report.lambda1, 0.7139, decimal=3)
     >>> np.testing.assert_almost_equal(reliability_report.lambda2, 0.8149701194973398, decimal=3)
+    >>> np.testing.assert_almost_equal(reliability_report.report_eigenvalues['g'][0], 2.0281, decimal=3)
+    >>> np.testing.assert_almost_equal(reliability_report.report_eigenvalues['F1'][0], 1.1845, decimal=3)
+    >>> np.testing.assert_almost_equal(reliability_report.report_loadings['g'][0], 0.34, decimal=3)
 
     With dataset and imputations:
 
@@ -76,7 +87,6 @@ class reliability_analysis:
     >>> ra.fit()
     >>> np.testing.assert_almost_equal(reliability_report.alpha_cronbach, 0.78917, decimal=3)
     >>> np.testing.assert_almost_equal(reliability_report.omega_total, 0.9378722, decimal=3)
-
     """
 
     def __init__(self,
@@ -87,7 +97,8 @@ class reliability_analysis:
                  method_fa_g: str = 'minres',
                  is_corr_matrix: bool = True,
                  impute: str = 'drop',
-                 n_factors_f: int = 3):
+                 n_factors_f: int = 3,
+                 round_decimals: int = 2):
 
         self.raw_dataset = raw_dataset
         self.correlations_matrix = correlations_matrix
@@ -97,6 +108,7 @@ class reliability_analysis:
         self.is_corr_matrix = is_corr_matrix
         self.n_factors_f = n_factors_f
         self.impute = impute
+        self.round_decimals = round_decimals
         # Defaults to None
         self.fa_f = None
         self.fa_g = None
@@ -119,13 +131,13 @@ class reliability_analysis:
         This is to check the arguments from the beginning.
 
         """
-        if not isinstance(self.raw_dataset,type(None)) and self.is_corr_matrix==True:
+        if not isinstance(self.raw_dataset, type(None)) and self.is_corr_matrix == True:
             raise ValueError(f"You have introduced variable 'raw_dataset' and "
                              f"'is_corr_matrix' as True. If 'is_corr_matrix' then"
                              f"you should use 'correlations_matrix' instead of "
                              f"'raw_dataset'.")
 
-        if isinstance(self.correlations_matrix,type(None)) and self.is_corr_matrix==True:
+        if isinstance(self.correlations_matrix, type(None)) and self.is_corr_matrix == True:
             raise ValueError(f"If 'is_corr_matrix' is True, please introduce it in "
                              f"'correlations_matrix' = YOUR DATA")
 
@@ -154,16 +166,16 @@ class reliability_analysis:
 
         # check to see if there are any null values, and if
         # so impute using the desired imputation approach
-        if not isinstance(self.raw_dataset,type(None)):
+        if not isinstance(self.raw_dataset, type(None)):
             # convert to numpy
-            if isinstance(self.raw_dataset,pd.DataFrame):
+            if isinstance(self.raw_dataset, pd.DataFrame):
                 self.raw_dataset = self.raw_dataset.to_numpy()
             if np.isnan(self.raw_dataset).any() and not self.is_corr_matrix:
                 self.raw_dataset_imputated = impute_values(self.raw_dataset, how=self.impute)
 
         # get the correlation matrix
         if not self.is_corr_matrix:
-            if not isinstance(self.raw_dataset_imputated,type(None)):
+            if not isinstance(self.raw_dataset_imputated, type(None)):
                 self.correlations_matrix = np.abs(corr(self.raw_dataset_imputated))
             else:
                 self.correlations_matrix = np.abs(corr(self.raw_dataset))
@@ -208,8 +220,39 @@ class reliability_analysis:
                                      self.fa_g.get_uniquenesses()[i] ** 0.5
         self.f_loadings_final = np.abs(f_loadings_final)
         self.f_eigenvalues_final = np.dot(f_loadings_final.T, f_loadings_final).sum(axis=1)
+        self._create_report_loadings()
+        self._create_report_eigenvalues()
+
+    def _create_report_loadings(self):
+        """
+        This function build the a dataframe to show the loads of the componenets
+        in a similar way than `psych` `omega` function
+        """
+        self.f_loadings_final = pd.DataFrame(self.f_loadings_final)
+        self._f_columns_list = [f"F{i}" for i in self.f_loadings_final.columns]
+        self.f_loadings_final.columns = self._f_columns_list
+        self.report_loadings = pd.DataFrame(self.general_component_loading, columns=["g"])
+        self.report_loadings = pd.merge(self.report_loadings, self.f_loadings_final,
+                                        left_index=True, right_index=True).round(decimals=self.round_decimals)
+        self.report_loadings['u2'] = self.fa_f.get_uniquenesses()
+        self.report_loadings['h2'] = self.fa_f.get_communalities()
+        self.report_loadings = self.report_loadings.round(decimals=self.round_decimals)
+
+    def _create_report_eigenvalues(self):
+        """
+        This function build the a dataframe to show the eigenvalues
+        in a similar way than `psych` `omega` function
+        """
+        dict_to_create_pd = {'g': self.general_component_eigenvalue[0][0]}
+        for f_columns_id in range(0, self._f_columns_list.__len__()):
+            dict_to_create_pd[self._f_columns_list[f_columns_id]] = self.f_eigenvalues_final[f_columns_id]
+        aux = pd.DataFrame(dict_to_create_pd.values()).T
+        aux.columns = dict_to_create_pd.keys()
+        aux.index = ['eigenvalues']
+        self.report_eigenvalues = aux
 
 
 if __name__ == '__main__':
     import doctest
+
     doctest.testmod(verbose=True)

@@ -3,19 +3,15 @@
 # reliabiliPy
 
 ## Summary
-Simple implementation in Python of the [reliability](https://en.wikipedia.org/wiki/Reliability_(statistics) measures for surveys: Omega Total,
-Omega Hierarchical and Omega Hierarchical Total.
+* Simple implementation in Python of the [reliability](https://en.wikipedia.org/wiki/Reliability_(statistics) measures for surveys: Omega Total,
+Omega Hierarchical and Omega Hierarchical  Asymptotic and Omega Total, using Schmid-Leiman solution. 
+* Also Cronbach's Alpha Guttman’s lower bounds of reliability $\lamda_1$ and  $\lamda_2$.
+* Explanations  and documentation  available
 
-| Name                                                                                                                    | Link                                            | 
-|-------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------|
-| Omega Total    ![w](https://latex.codecogs.com/svg.latex?\omega_{t})                                                    | Tell us how muhc variance can the model explain |
-| Omega Hierarchcal  ![w](https://latex.codecogs.com/svg.latex?\omega_{h})                                                ||
-| Omega Hierarchycal Limit ![w](https://latex.codecogs.com/svg.latex?\omega_{h_{\infty}})                                 |                                                 |
-| [Cronbach's alpha](https://en.wikipedia.org/wiki/Cronbach%27s_alpha)  ![w](https://latex.codecogs.com/svg.latex?\alpha) |                                                 |
-
-
-See [Documentation](https://rafaelvalero.github.io/OmegaPy/)
+See [Documentation](https://rafaelvalero.github.io/reliabiliPy/)
 ## Quick Start
+
+If you have the correlations matrix of your dataset.
 
 ```python
 import pandas as pd
@@ -37,6 +33,35 @@ print('here omega Hierarchical: ', reliability_report.omega_hierarchical)
 print('here Omega Hierarchical infinite or asymptotic: ', reliability_report.omega_hierarchical_asymptotic)
 print('here Omega Total', reliability_report.omega_total)
 print('here Alpha Cronbach total', reliability_report.alpha_cronbach)
+print(reliability_report.lambda1)
+print(reliability_report.lambda2)
+print(reliability_report.report_eigenvalues)
+print(reliability_report.report_loadings)
+
+```
+
+If you want to use the whole dataset you could do it to, adding the inputations method
+you prefer:
+
+```python
+import pandas as pd
+import numpy as np
+from reliabilipy import reliability_analysis
+raw_dataset = pd.DataFrame([{'C1': 2.0, 'C2': 3.0, 'C3': 3.0, 'C4': 4.0, 'C5': 4.0},\
+        {'C1': 5.0, 'C2': 4.0, 'C3': 4.0, 'C4': 3.0, 'C5': 4.0},\
+        {'C1': 4.0, 'C2': 5.0, 'C3': 4.0, 'C4': 2.0, 'C5': 5.0},\
+        {'C1': 4.0, 'C2': 4.0, 'C3': 3.0, 'C4': 5.0, 'C5': 5.0},\
+        {'C1': 4.0, 'C2': 4.0, 'C3': 5.0, 'C4': 3.0, 'C5': 2.0},\
+        {'C1': 4.0, 'C2': np.nan, 'C3': 3.0, 'C4': 5.0, 'C5': 5.0},\
+        {'C1': np.nan, 'C2': 4.0, 'C3': 5.0, 'C4': 3.0, 'C5': 2.0}])
+ra = reliability_analysis(raw_dataset=raw_dataset,
+                              is_corr_matrix=False,
+                              impute='median')
+ra.fit()
+print('here omega Hierarchical: ', ra.omega_hierarchical)
+print('here Omega Hierarchical infinite or asymptotic: ', ra.omega_hierarchical_asymptotic)
+print('here Omega Total', ra.omega_total)
+print('here Alpha Cronbach total', ra.alpha_cronbach)
 ```
 
 # Context
@@ -46,7 +71,7 @@ a measure, particular in psychometrics and surveys analysis.
 `R` has packages for this kind of analysis available, such us `psych`by Revelle (2017). `python` goes behind on this.
 The closes are [factor-analyser](https://github.com/EducationalTestingService/factor_analyzer) and [Pingouin](https://pingouin-stats.org/index.html).
 As I write this there is a gap in the market since none of the above libraries currently implement any 
- omega related reliability measure. Although Pingouin implements [Cronbach's alpha](https://en.wikipedia.org/wiki/Cronbach%27s_alpha)
+omega related reliability measure. Although Pingouin implements [Cronbach's alpha](https://en.wikipedia.org/wiki/Cronbach%27s_alpha)
 
 ## Aim
 1. To bring functions to ```python``` for psychometrics and survey analysis, as there is a gap. Mostly from the package in `R` `psych`.
@@ -66,7 +91,7 @@ https://personality-project.org/r/book/Chapter7.pdf
 
 ## Acknowledgement
 * real-statistics.com
-* Factor Analyzer. Python library. https://github.com/EducationalTestingService/factor_analyzer 
+* Factor Analyzer. Python library. This library is based heavily on this one. https://github.com/EducationalTestingService/factor_analyzer 
 
 # Cite this package as
 * Rafael Valero Fernández. (2022). reliabiliPy: measures of survey domain
