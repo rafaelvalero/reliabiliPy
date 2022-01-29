@@ -39,13 +39,9 @@ reliability_report.report_eigenvalues
 
 reliability_report.report_loadings
 
-# The eigenvalues:
-
-np.dot(f_loadings_final.T,f_loadings_final).sum(axis=1)
-
-"""save code """
-
 import os
 order = f'jupytext --to py {name_notebook}.ipynb'
 print(order)
 os.system(order)
+
+
