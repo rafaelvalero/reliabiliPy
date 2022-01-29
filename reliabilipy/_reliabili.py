@@ -3,7 +3,6 @@ import pandas as pd
 import numpy as np
 from factor_analyzer import FactorAnalyzer
 from factor_analyzer.utils import impute_values, corr
-# import doctest
 from typing import List, Tuple, Union, Mapping, Any
 
 POSSIBLE_IMPUTATIONS = ['mean', 'median', 'drop']
