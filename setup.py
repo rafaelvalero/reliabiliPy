@@ -10,11 +10,11 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="reliabiliPy",
-    version="0.0.1",
+    version="0.0.3b",
     author="Rafael Valero-Fernandez",
     author_email="rafael.valero.fernandez@gmail.com",
     description="Simple implementation in Python of the reliability: "
-                "Omega Total,Omega Hierarchical and Omega Hierarchical Total.",
+                "Omega Total,Omega Hierarchical, Omega Hierarchical Total, Cronbach's Alpha and more.",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/rafaelvalero/reliabiliPy",

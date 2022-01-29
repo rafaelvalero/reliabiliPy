@@ -2,6 +2,7 @@
 
 # reliabiliPy
 
+
 ## Summary
 * Simple implementation in Python of the [reliability](https://en.wikipedia.org/wiki/Reliability_(statistics) measures for surveys: Omega Total,
 Omega Hierarchical and Omega Hierarchical  Asymptotic and Omega Total, using Schmid-Leiman solution. 
@@ -12,6 +13,12 @@ See [Documentation](https://rafaelvalero.github.io/reliabiliPy/)
 ## Quick Start
 
 If you have the correlations matrix of your dataset.
+
+To install:
+```bash
+pip install reliabiliPy
+```
+To start using it:
 
 ```python
 import pandas as pd
