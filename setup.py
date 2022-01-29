@@ -9,7 +9,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="reliabiliPy",
-    version="0.0.34",
+    version="0.0.35",
     author="Rafael Valero-Fernandez",
     author_email="rafael.valero.fernandez@gmail.com",
     description="Simple implementation in Python of the reliability: "
