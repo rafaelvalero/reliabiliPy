@@ -33,6 +33,11 @@ print('here omega Hierarchical: ', reliability_report.omega_hierarchical)
 print('here Omega Hierarchical infinite or asymptotic: ', reliability_report.omega_hierarchical_asymptotic)
 print('here Omega Total', reliability_report.omega_total)
 print('here Alpha Cronbach total', reliability_report.alpha_cronbach)
+print(reliability_report.lambda1)
+print(reliability_report.lambda2)
+print(reliability_report.report_eigenvalues)
+print(reliability_report.report_loadings)
+
 ```
 
 If you want to use the whole dataset you could do it to, adding the inputations method
@@ -53,10 +58,10 @@ ra = reliability_analysis(raw_dataset=raw_dataset,
                               is_corr_matrix=False,
                               impute='median')
 ra.fit()
-print('here omega Hierarchical: ', reliability_report.omega_hierarchical)
-print('here Omega Hierarchical infinite or asymptotic: ', reliability_report.omega_hierarchical_asymptotic)
-print('here Omega Total', reliability_report.omega_total)
-print('here Alpha Cronbach total', reliability_report.alpha_cronbach)
+print('here omega Hierarchical: ', ra.omega_hierarchical)
+print('here Omega Hierarchical infinite or asymptotic: ', ra.omega_hierarchical_asymptotic)
+print('here Omega Total', ra.omega_total)
+print('here Alpha Cronbach total', ra.alpha_cronbach)
 ```
 
 # Context

@@ -26,13 +26,12 @@
 
 name_notebook = 'revelle_ch7_example' # this is to save
 
+# %load_ext autoreload
+# %autoreload 2
 import pandas as pd
 import numpy as np
-
 import sys
 sys.path.append("../")
-
-
 from reliabilipy import reliability_analysis
 
 # Dataset as examample in Table 7.5  https://personality-project.org/r/book/Chapter7.pdf
@@ -83,6 +82,12 @@ print(lambda2)
 alpha = n/(n-1)*(Vx-np.diag(V).sum())/Vx
 print(alpha)
 
+reliability_report = reliability_analysis(correlations_matrix=V)
+reliability_report.fit()
+print(reliability_report.lambda1)
+print(reliability_report.lambda2)
+print(reliability_report.alpha_cronbach)
+
 # # Omegas reliability
 #
 # Omegas are based on a decomposition of the variance of a test score, $V_x$ into four parts: that due to a general factor, $\vec{g}$, that due to a set of group factors, $\vec{f}$, (factors common to some but not all of the items), specific factors, $\vec{s}$ unique to each item, and $\vec{e}$, random error. (Because specific variance can not be distinguished from random error unless the test is given at least twice, some combine these both into error).
@@ -110,6 +115,21 @@ print(alpha)
 #
 # The input to omega may be a correlation matrix or a raw data matrix, or a factor pattern matrix with the factor intercorrelations (Phi) matrix.
 
+# ## Results in R using Psych
+# There is an R notebook with the full example, in the same folder that this notebook, with this result:
+# ```bash
+# Omega 
+# Call: omega(m = correlation_matrix)
+# Alpha:                 0.84 
+# G.6:                   0.88 
+# Omega Hierarchical:    0.54 
+# Omega H asymptotic:    0.6 
+# Omega Total            0.9 
+# ````
+#
+
+# ## Results using 'reliabiliPy'
+
 reliability_report = reliability_analysis(correlations_matrix=V)
 reliability_report.fit()
 
@@ -118,20 +138,55 @@ print(reliability_report.omega_hierarchical)
 print(reliability_report.omega_hierarchical_asymptotic)
 
 
+# ## Further R output
+# ```bash
+#     g        F1   F2   F3     h2      u2      p2
+# v0	0.45	0.55			0.5	0.5	0.40
+# v1	0.45	0.55			0.5	0.5	0.40
+# v2	0.45	0.55			0.5	0.5	0.40
+# v3	0.45	0.55			0.5	0.5	0.40
+# v4	0.45	0.55			0.5	0.5	0.40
+# v5	0.45	0.55			0.5	0.5	0.40
+# v6	0.45		 0.63	   0.6	0.4	0.33
+# v7	0.45		 0.63	   0.6	0.4	0.33
+# v8	0.45		 0.63	   0.6	0.4	0.33
+# v9	0.45		 0.63	   0.6	0.4	0.33
+# ```
+#
+# With eigenvalues of:
+# ```bash
+#   g F1* F2* F3* 
+# 2.4 1.8 1.6 1.0 
+# ```
+
+reliability_report.report_loadings['g'][0]
+
+reliability_report.report_eigenvalues
+
 # # Estimation of Omegas reliabilities
 #
-# But how can we estimate that?. Using `Schmid-Leiman` solution. For an explanation on that   Wolff and Preising (2005). There the authors try to do the same that in this work but for SPSS and SAS.
+# This section is in case you want to go deeper. This will allow you to understand the calculation and to be able to modify the package.
 #
-# matrix $\mathbf{F}_{1}$ (i.e., rotated loadings), a first-order factor correlation matrix termed $\mathbf{R}_{1}$, and unique variances $\mathbf{U}_{1}^{2}$ of variables:
+# But how can we estimate that?. Using `Schmid-Leiman` solution. For an explanation on that   Wolff and Preising (2005). There the authors try to do the same that in this work but for SPSS and SAS. 
+#
+# "matrix $\mathbf{F}_{1}$ (i.e., rotated loadings), a first-order factor correlation matrix termed $\mathbf{R}_{1}$, and unique variances $\mathbf{U}_{1}^{2}$ of variables:
 # $$
-# \mathbf{R}_{v}=\mathbf{F}_{1} \mathbf{R}_{1} \mathbf{F}_{1}^{\prime}+\mathbf{U}_{1}^{2} .
+# \mathbf{R}_{v}=\mathbf{F}_{1} \mathbf{R}_{1} \mathbf{F}_{1}^{\prime}+\mathbf{U}_{1}^{2} 
 # $$
+#
+#
+#
 # Matrix $\mathbf{F}_{1}$ is of the order $v \times f_{1}$, where $f_{1}$ is the number of first-order factors. $\mathbf{R}_{1}$ is of the order $f_{1} \times f_{1} . \mathbf{U}_{1}^{2}$ is a matrix of the order $v \times v$ and consists of measurement error and specific components of variables.
 #
 # Second-order factors can be extracted from the factor correlation matrix $\mathbf{R}_{1}$, yielding a matrix of second-order factor loadings $\mathbf{F}_{2}$, a second-order factor correlation matrix $\mathbf{R}_{2}$, and the unique variance of this level, $\mathbf{U}_{2}^{2}$ :
+#
+#
+#
 # $$
-# \mathbf{R}_{1}=\mathbf{F}_{2} \mathbf{R}_{2} \mathbf{F}_{2}^{\prime}+\mathbf{U}_{2}^{2} .
+# \mathbf{R}_{1}=\mathbf{F}_{2} \mathbf{R}_{2} \mathbf{F}_{2}^{\prime}+\mathbf{U}_{2}^{2}
 # $$
+#
+#
 # $\mathbf{F}_{2}$ is of the order $f_{1} \times f_{2}$, where $f_{2}$ is the number of second-order factors. $\mathbf{R}_{2}$ is of the order $f_{2} \times f_{2} . \mathbf{U}_{2}^{2}$ is a matrix of the order $f_{1} \times f_{1}$.
 #
 # These two analyses comprise a minimal higher order FA consisting of two levels. $\mathbf{F}_{1}$ from Equation 1 provides first-order factor loadings (e.g., paths from $\mathrm{F}_{1}$ to variables in Figure 1A), and $\mathbf{F}_{2}$ yields second-order factor loadings (e.g., the path from Factor 1 to $\mathrm{F}_{1}$ in Figure $1 \mathrm{~A}$ ). If second-order factors are uncorrelated, matrix $\mathbf{R}_{2}$ is an identity matrix and can be ignored. If second-order factors are correlated, analyses may continue to extract third-order factors.
@@ -148,8 +203,9 @@ print(reliability_report.omega_hierarchical_asymptotic)
 # $$
 # \mathbf{U}_{2}=\left[\mathbf{I}-\operatorname{diag}\left(\mathbf{F}_{2} \mathbf{R}_{2} \mathbf{F}_{2}^{\prime}\right)\right]^{0.5},
 # $$
-# where $\mathbf{I}$ is an identity matrix and diag indicates that only
+# where $\mathbf{I}$ is an identity matrix and diag indicates that only"
 
+# # Tranlations in our case and to Python
 # $$
 # \mathbf{F}_{2}^{\mathrm{SLS}}=\mathbf{F}_{1} * \mathbf{F}_{2},
 # $$
@@ -157,6 +213,7 @@ print(reliability_report.omega_hierarchical_asymptotic)
 
 general_component = np.dot(reliability_report.fa_f.loadings_,
                            reliability_report.fa_g.loadings_)
+general_component=np.abs(general_component)
 general_component
 
 # Eigenvalue g
@@ -171,12 +228,14 @@ reliability_report.fa_f.get_uniquenesses()
 
 reliability_report.fa_f.get_communalities()
 
+# To update the group factors
+#
 # $$
 # \mathbf{F}_{1}^{\mathrm{SLS}}=\mathbf{F}_{1} * \mathbf{U}_{2},
 # $$
 
-eigenvector_report = np.zeros(reliability_report.fa_f.loadings_.shape)
-eigenvector_report
+f_loadings_final = np.zeros(reliability_report.fa_f.loadings_.shape)
+f_loadings_final
 
 
 reliability_report.fa_g.loadings_
@@ -185,32 +244,22 @@ reliability_report.fa_f.get_uniquenesses()
 
 # +
 for i in range(0,reliability_report.fa_g.get_uniquenesses().__len__()):
-    eigenvector_report[:,i] = reliability_report.fa_f.loadings_[:,i]*reliability_report.fa_g.get_uniquenesses()[i]**0.5
+    f_loadings_final[:,i] = reliability_report.fa_f.loadings_[:,i]*reliability_report.fa_g.get_uniquenesses()[i]**0.5
 
-    
+f_loadings_final = np.abs(f_loadings_final)   
 # -
 
 # The eigenvectors in our example:
 
-eigenvector_report.round(3)
+np.abs(f_loadings_final).round(3)
 
 # The eigenvalues:
 
-np.dot(eigenvector_report.T,eigenvector_report).sum(axis=1)
+np.dot(f_loadings_final.T,f_loadings_final).sum(axis=1)
 
-
+"""save code """
 
 import os
 order = f'jupytext --to py {name_notebook}.ipynb'
 print(order)
 os.system(order)
-
-# +
-import subprocess
-
-subprocess.call(order, shell=True)
-# -
-
-# !jupytext --to py revelle_ch7_example.ipynb
-
-
