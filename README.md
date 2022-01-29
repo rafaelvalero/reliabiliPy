@@ -90,7 +90,6 @@ https://personality-project.org/r/book/Chapter7.pdf
 * Wolff, Hans-Georg, and Katja Preising. "Exploring item and higher order factor structure with the Schmid-Leiman solution: Syntax codes for SPSS and SAS." Behavior Research Methods 37.1 (2005): 48-58.
 
 ## Acknowledgement
-* real-statistics.com
 * Factor Analyzer. Python library. This library is based heavily on this one. https://github.com/EducationalTestingService/factor_analyzer 
 
 # Cite this package as
