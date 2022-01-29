@@ -1,0 +1,72 @@
+---
+title: "checking_class"
+output: html_notebook
+---
+# Aim
+
+To provide a clear understanding of some of the key measures or reliability and their implementation in `python`.
+
+# How
+
+To do that I will follow references as close as possible while providing the python code of the implementation of the ideas and examples.
+
+Revelle has greatly created and write many papers in the matter and the library `psych`in `R` with the corresponding implementations. We would follow Revelle 2021 and 2017, in particlar Revelle 2021 very closely.
+
+We would expand a bit when calculating the omegas and in particular when using the `Schmid-Leiman` solution, following Wolff and Presing 2005, as it constains a clear explanations of the theory and the estimation, as in this paper authors describe the implementation in `SPSS` and `SAS`, which something similar we are trying to do here in `python`.
+
+
+## References
+* Revelle, Willian. Manuscrip. 2021. An introduction to psychometric theory with applications in R. https://personality-project.org/r/book/Chapter7.pdf
+* Revelle, William R. "psych: Procedures for personality and psychological research." (2017).
+* Wolff, Hans-Georg, and Katja Preising. "Exploring item and higher order factor structure with the Schmid-Leiman solution: Syntax codes for SPSS and SAS." Behavior Research Methods 37.1 (2005): 48-58.
+
+Examples in R.
+
+This work: 
+* Rafael Valero Fernández. (2022). reliabiliPy: measures of survey domain reliability in Python with explanations and examples. Cronbach´s Alpha and Omegas. (v0.0.0). Zenodo.[![DOI](https://zenodo.org/badge/445846537.svg)](https://zenodo.org/badge/latestdoi/445846537) 
+```{r}
+library("psych")
+```
+
+```{r}
+correlation_matrix <- data.frame(
+   v0 = c(1.0, 0.5, 0.5, 0.5, 0.5, 0.5, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2), 
+   v1 = c(0.5, 1.0, 0.5, 0.5, 0.5, 0.5, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2),
+   v2 = c(0.5, 0.5, 1.0, 0.5, 0.5, 0.5, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2), 
+   v3 = c(0.5, 0.5, 0.5, 1.0, 0.5, 0.5, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2),
+   v4 = c(0.5, 0.5, 0.5, 0.5, 1.0, 0.5, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2), 
+   v5 = c(0.5, 0.5, 0.5, 0.5, 0.5, 1.0, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2),
+   v6 = c(0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 1.0, 0.6, 0.6, 0.6, 0.2, 0.2), 
+   v7 = c(0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.6, 1.0, 0.6, 0.6, 0.2, 0.2),
+   v8 = c(0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.6, 0.6, 1.0, 0.6, 0.2, 0.2), 
+   v9 = c(0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.6, 0.6, 0.6, 1.0, 0.2, 0.2),
+   v10 = c(0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 1.0, 0.7), 
+   v11 = c(0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.7, 1.0)
+   )
+correlation_matrix
+```
+
+Now run the analysis
+```{r}
+ omega(correlation_matrix)
+
+```
+
+```{r}
+library("psych")
+correlation_matrix <- data.frame(
+   v0 = c(1.0, 0.5, 0.5, 0.5, 0.5, 0.5, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2), 
+   v1 = c(0.5, 1.0, 0.5, 0.5, 0.5, 0.5, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2),
+   v2 = c(0.5, 0.5, 1.0, 0.5, 0.5, 0.5, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2), 
+   v3 = c(0.5, 0.5, 0.5, 1.0, 0.5, 0.5, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2),
+   v4 = c(0.5, 0.5, 0.5, 0.5, 1.0, 0.5, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2), 
+   v5 = c(0.5, 0.5, 0.5, 0.5, 0.5, 1.0, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2),
+   v6 = c(0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 1.0, 0.6, 0.6, 0.6, 0.2, 0.2), 
+   v7 = c(0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.6, 1.0, 0.6, 0.6, 0.2, 0.2),
+   v8 = c(0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.6, 0.6, 1.0, 0.6, 0.2, 0.2), 
+   v9 = c(0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.6, 0.6, 0.6, 1.0, 0.2, 0.2),
+   v10 = c(0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 1.0, 0.7), 
+   v11 = c(0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.7, 1.0)
+   )
+omega(correlation_matrix)
+```
