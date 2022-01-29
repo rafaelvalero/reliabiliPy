@@ -2,8 +2,8 @@
 
 # reliabiliPy
 
-## Summary
-* Simple implementation in Python of the [reliability](https://en.wikipedia.org/wiki/Reliability_(statistics) measures for surveys: Omega Total,
+## Summary 
+* Simple  implementation in Python of the [reliability](https://en.wikipedia.org/wiki/Reliability_(statistics) measures for surveys: Omega Total,
 Omega Hierarchical and Omega Hierarchical  Asymptotic and Omega Total, using Schmid-Leiman solution. 
 * Also Cronbach's Alpha Guttman’s lower bounds of reliability $\lamda_1$ and  $\lamda_2$.
 * Explanations  and documentation  available
