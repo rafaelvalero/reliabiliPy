@@ -1,8 +1,7 @@
 import setuptools
 # Packages
 base_packages = [
-    "factor_analyzer"
-]
+    "factor-analyzer>=0.4.0"]
 
 # Load the long_description from README.md
 with open("README.md", "r") as fh:
@@ -10,7 +9,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="reliabiliPy",
-    version="0.0.3b",
+    version="0.0.34",
     author="Rafael Valero-Fernandez",
     author_email="rafael.valero.fernandez@gmail.com",
     description="Simple implementation in Python of the reliability: "
@@ -25,4 +24,5 @@ setuptools.setup(
         "Operating System :: OS Independent",
     ],
     python_requires='>=3.6',
-    install_requires=base_packages,)
+    install_requires=base_packages
+    )
