@@ -182,6 +182,7 @@ class reliability_analysis:
         # Start Calculations
         self.fa_f = FactorAnalyzer(rotation=self.rotation_fa_f,
                                    method=self.method_fa_f,
+                                   n_factors=self.n_factors_f,
                                    is_corr_matrix=True)
         self.fa_f.fit(self.correlations_matrix)
         self.fa_g = FactorAnalyzer(rotation=None,
