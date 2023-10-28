@@ -102,7 +102,7 @@ class reliability_analysis:
         self.raw_dataset = raw_dataset
         self.correlations_matrix = correlations_matrix
         self.method_fa_f = method_fa_f.lower()
-        self.rotation_fa_f = rotation_fa_f.lower()
+        self.rotation_fa_f = rotation_fa_f.lower() if rotation_fa_f else rotation_fa_f
         self.method_fa_g = method_fa_g.lower()
         self.is_corr_matrix = is_corr_matrix
         self.n_factors_f = n_factors_f
@@ -182,6 +182,7 @@ class reliability_analysis:
         # Start Calculations
         self.fa_f = FactorAnalyzer(rotation=self.rotation_fa_f,
                                    method=self.method_fa_f,
+                                   n_factors=self.n_factors_f,
                                    is_corr_matrix=True)
         self.fa_f.fit(self.correlations_matrix)
         self.fa_g = FactorAnalyzer(rotation=None,
